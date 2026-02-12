@@ -2,145 +2,145 @@
 sidebar_position: 0
 ---
 
-# Overview
+#概述
 
-This page provides a comprehensive overview of the Surfboard profile format. Surfboard's configuration system is designed for flexibility and power, allowing users to define sophisticated proxy rules and network behaviors.
+本页面提供了冲浪板配置文件格式的全面概述。冲浪板的配置系统旨在实现灵活性和强大功能，使用户能够定义复杂的代理规则和网络行为。
 
 :::tip
-Surfboard follows [Surge](https://nssurge.com/)'s profile format.
+冲浪板关注[Surge](https://nssurge.com/)的个人资料格式。
 
-Surge's profile documentation can be viewed [here](https://manual.nssurge.com/).
+可查看Surge的配置文档[此处](https://manual.nssurge.com/).
 :::
 
-The following example demonstrates a complete profile structure, covering the primary sections: `[General]`, `[Host]`, `[Proxy]`, `[Proxy Group]`, `[Rule]`, and `[Panel]`.
+以下示例展示了完整的配置文件结构，涵盖主要部分：`[常规]`, `[主机]`, `[代理]`, `[代理组]`, `[规则]`,以及`[面板]`.
 
-```ini
-#!MANAGED-CONFIG http://test.com/surfboard.conf interval=60 strict=true # Remote configuration subscription with auto-update interval in minutes
+这是
+#!MANAGED-CONFIG http://test.com/surfboard.conf interval=60 strict=true # 带自动更新间隔的远程配置订阅，间隔以分钟为单位
 
-[General]
-# DNS server configuration. 'system' uses the device's default DNS.
+
+# DNS服务器配置。'system' 使用设备的默认DNS。
 dns-server = system, 8.8.8.8, 8.8.4.4, 9.9.9.9:9953
 
-# DNS over HTTPS (DoH) servers for encrypted DNS queries.
+# 用于加密DNS查询的DNS over HTTPS (DoH)服务器。
 doh-server = https://9.9.9.9/dns-query, https://1.1.1.1/dns-query
 
-# List of domains or IP ranges that bypass the proxy.
-skip-proxy = 127.0.0.1, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 100.64.0.0/10, localhost, *.local, www.example.com
+绕过代理的域名或IP地址范围列表。
 
-# URL used to test latency for proxy connections.
-proxy-test-url = http://www.gstatic.com/generate_204
 
-# URL used to test latency for direct connections.
-internet-test-url = http://www.gstatic.cn/generate_204
+用于测试代理连接延迟的URL。
+代理测试网址 = http://www.gstatic.com/generate_204
 
-# Timeout in seconds for connectivity tests.
+
+互联网测试网址 = http://www.gstatic.cn/generate_204
+
+# 连接测试的超时时间，单位为秒。
 test-timeout = 5
 
-# Domains that should always resolve to their real IP, bypassing fake IP mechanisms.
+#应始终解析为真实IP的域名，绕过虚假IP机制。
 always-real-ip = *.srv.nintendo.net, *.stun.playstation.net, xbox.*.microsoft.com, *.xboxlive.com
 
-# Internal HTTP proxy server address and port.
+#内部HTTP代理服务器地址和端口。
 http-listen = 0.0.0.0:1234
 
-# Internal SOCKS5 proxy server address and port.
+#内部SOCKS5代理服务器地址和端口。
 socks5-listen = 127.0.0.1:1235
 
-# Behavior when a proxy does not support UDP relay (DIRECT or REJECT).
+#当代理不支持UDP中继时的行为（DIRECT或REJECT）。
 udp-policy-not-supported-behaviour = DIRECT
 
-[Host]
-# Static IP mapping for specific domains.
+[主机]
+#针对特定域名的静态IP映射。
 abc.com = 1.2.3.4
 
-# Wildcard domain mapping.
+#通配符域名映射。
 *.dev = 6.7.8.9
 
-# DNS alias (CNAME) mapping.
+#DNS别名（CNAME）映射。
 foo.com = bar.com
 
-# Custom DNS server for a specific domain.
+#针对特定域名的自定义DNS服务器。
 bar.com = server:8.8.8.8
 
-[Proxy]
-# Built-in policies.
-On = direct
-Off = reject
+]
+#内置策略。
+开启 = 直接
+关闭 = 拒绝
 
-# HTTP proxy configuration.
+#HTTP代理配置。
 ProxyHTTP = http, 1.2.3.4, 443, username, password
 
-# HTTPS proxy with TLS settings.
+#带有TLS设置的HTTPS代理。
 ProxyHTTPS = https, 1.2.3.4, 443, username, password, skip-cert-verify=true, sni=www.google.com
 
-# SOCKS5 proxy configuration.
+#SOCKS5代理配置。
 ProxySOCKS5 = socks5, 1.2.3.4, 443, username, password, udp-relay=false
 
-# SOCKS5 over TLS for enhanced security.
-ProxySOCKS5TLS = socks5-tls, 1.2.3.4, 443, username, password, skip-cert-verify=true, sni=www.google.com
+#通过TLS的SOCKS5，以增强安全性。
+ProxySOCKS5TLS = socks5-tls, 1.2.3.4, 443, 用户名, 密码, skip-cert-verify=true, sni=www.google.com
 
-# Shadowsocks proxy with optional obfuscation.
+#带可选混淆功能的Shadowsocks代理。
 ProxySS = ss, 1.2.3.4, 8000, encrypt-method=chacha20-ietf-poly1305, password=abcd1234, udp-relay=false, obfs=http, obfs-host=www.google.com, obfs-uri=/
 
-# VMess proxy for V2Ray protocols.
+V2Ray协议的VMess代理。
 ProxyVMess = vmess, 1.2.3.4, 8000, username=0233d11c-15a4-47d3-ade3-48ffca0ce119, udp-relay=false, ws=true, tls=true, ws-path=/v2, ws-headers=X-Header-1:value|X-Header-2:value, skip-cert-verify=true, sni=www.google.com, vmess-aead=true
 
-# Trojan proxy configuration.
-ProxyTrojan = trojan, 192.168.20.6, 443, password=password1, udp-relay=false, skip-cert-verify=true, sni=www.google.com
+#木马代理配置。
+代理木马 = 木马, 192.168.20.6, 443, 密码=密码1, udp中继=false, 跳过证书验证=true, sni=www.google.com
 
-# WireGuard VPN integration.
+#WireGuard VPN 集成。
 ProxyWireguard = wireguard, section-name = HomeServer
 
-[WireGuard HomeServer]
-# Specific WireGuard interface and peer configuration.
-private-key = sDEZLACT3zgNCS0CyClgcBC2eYROqYrwLT4wdtAJj3s=
-self-ip = 10.0.2.2
-dns-server = 8.8.8.8
-mtu = 1280
-peer = (public-key = fWO8XS9/nwUQcqnkfBpKeqIqbzclQ6EKP20Pgvzwclg=, allowed-ips = 0.0.0.0/0, endpoint = 192.168.20.6:51820, keepalive = 30)
+[WireGuard 家庭服务器]
+#特定的WireGuard接口和对等体配置。
+私钥 = sDEZLACT3zgNCS0CyClgcBC2eYROqYrwLT4wdtAJj3s=
+本机IP = 10.0.2.2
+DNS服务器 = 8.8.8.8
+MTU = 1280
+对等方 = (公钥 = fWO8XS9/nwUQcqnkfBpKeqIqbzclQ6EKP20Pgvzwclg=, 允许的IP = 0.0.0.0/0, 端点 = 192.168.20.6:51820, 心跳 = 30)
 
-[Proxy Group]
-# Manual selection group.
-SelectGroup = select, ProxyHTTP, ProxyHTTPS, DIRECT, REJECT
+[代理组]
+#手动选择组。
+选择组 = 选择，代理HTTP，代理HTTPS，直接，拒绝
 
-# Automatic latency-based selection.
-AutoTestGroup = url-test, ProxySOCKS5, ProxySOCKS5TLS, url=http://www.gstatic.com/generate_204, interval=600, tolerance=100, timeout=5, hidden=true
+#基于延迟的自动选择。
+自动测试组 = url-测试，代理SOCKS5，代理SOCKS5TLS，url=http://www.gstatic.com/generate_204，间隔=600，容差=100，超时=5，隐藏=true
 
-# Group utilizing an external policy list.
+#使用外部策略列表的组。
 ExternalGroup = select, policy-path=https://example.com/nodes.txt, policy-regex-filter=HK-.*
 
-# Group that includes all defined proxies.
-AllProxies = select, include-all-proxies = true
+#包含所有已定义代理的组。
+AllProxies = 选择，include-all-proxies = true
 
-# Load balancing group for distributing traffic.
-LoadBalanceGroup = load-balance, ProxyHTTP, ProxyHTTPS
+#用于分发流量的负载均衡组。
+LoadBalanceGroup = 负载均衡，ProxyHTTP，ProxyHTTPS
 
-# Fallback group: switches to next proxy if current fails.
-FallbackGroup = fallback, ProxySOCKS5, ProxySOCKS5TLS, url=http://www.gstatic.com/generate_204, interval=600, timeout=5
+#回退组：如果当前代理失败，则切换到下一个代理。
+回退组 = 回退，代理SOCKS5，代理SOCKS5TLS，url=http://www.gstatic.com/generate_204，间隔=600，超时=5
 
 [Rule]
 # Direct domain matching.
 DOMAIN,www.apple.com,ProxyHTTP
 
-# Domain suffix matching (covers all subdomains).
-DOMAIN-SUFFIX,apple.com,Proxy,force-remote-dns
+#域名后缀匹配（涵盖所有子域名）。
+DOMAIN-SUFFIX,apple.com,代理,强制使用远程DNS
 
-# Domain keyword matching.
-DOMAIN-KEYWORD,google,Proxy,enhanced-mode
+#域名关键词匹配。
+DOMAIN-KEYWORD,google,Proxy,增强模式
 
-# IP range matching using CIDR notation.
-IP-CIDR,192.168.0.0/16,DIRECT
+#使用CIDR表示法进行IP地址范围匹配。
+IP-CIDR，192.168.0.0/16，DIRECT
 
-# Geolocation-based matching (e.g., ISO country code).
-GEOIP,US,REJECT
+#基于地理位置的匹配（例如，ISO国家代码）。
+GEOIP，US，REJECT
 
-# Application-based matching by process/package name.
-PROCESS-NAME,com.android.vending,Proxy
+#按进程/软件包名称进行的应用程序匹配。
+进程名,com.android.vending,代理
 
-# Rule matching traffic against an external rule set.
-RULE-SET,https://example.com/ruleset.conf,ProxyVMess
+#根据外部规则集对流量进行规则匹配。
+规则集，https://example.com/ruleset.conf，ProxyVMess
 
-# SSID/BSSID based rules for specific networks.
-SUBNET,TYPE:WIFI,DIRECT
+#基于SSID/BSSID的特定网络规则。
+子网,类型:WIFI,直接
 
 # Protocol-specific rules.
 PROTOCOL,QUIC,REJECT
